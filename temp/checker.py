@@ -75,6 +75,6 @@ def check_password(password):
 for i in range(0, 1000):
     password = generate_random_password()
     # Shalgah zorilgoor 1000 random password uusgej uzsen. herev buruu tuhain password hevlegdene
-#     print(password)
+    print(password)
     if check_password(password=password) == False:
         print(password)
