@@ -34,6 +34,7 @@ def login_user(request):
                 'last_name': user.last_name,
                 'email': user.email,
                 'phone': user.phone,
+                'isadmin': user.isadmin,
                 # Add more attributes as needed
             }, cls=DjangoJSONEncoder)
           
