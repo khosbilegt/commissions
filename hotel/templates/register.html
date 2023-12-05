@@ -25,12 +25,16 @@
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Success:', data);
-            // Handle the response data as needed
+            if(data?.status === 'Success') {
+                window.location.href = '/'
+              } else {
+                window.alert("Incorrect email or password")
+              }
         })
         .catch(error => {
-            console.error('Error:', error);
-            // Handle errors
+            console.error('Error:', error);          
+            window.alert("System error")
+            window.location.href = '/'
         });
     }
   </script>

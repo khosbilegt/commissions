@@ -25,8 +25,9 @@ def login_user(request):
         json_data = json.loads(request.body.decode('utf-8'))
         email = json_data.get('email', '')
         password = json_data.get('password', '')
-        user = User.objects.get(email=email, password=password)
-        if user is not None:
+        users = User.objects.filter(email=email, password=password)
+        if users.exists():
+          user = users.first()
           user_json = json.dumps({
                 'id': str(user.id),
                 'first_name': user.first_name,
