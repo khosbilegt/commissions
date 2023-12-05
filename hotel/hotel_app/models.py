@@ -14,3 +14,23 @@ class User(models.Model):
 
     class Meta:
         db_table = 'users'
+
+class Room(models.Model):
+    room_id = models.CharField(max_length=10, primary_key=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    image = models.CharField(max_length=255, null=True, blank=True)
+    rooms = models.IntegerField(null=True, blank=True)
+    beds = models.IntegerField(null=True, blank=True)
+    bathrooms = models.IntegerField(null=True, blank=True)
+    balconies = models.IntegerField(null=True, blank=True)
+    adults = models.IntegerField(null=True, blank=True)
+    children = models.IntegerField(null=True, blank=True)
+    haswifi = models.BooleanField(null=True, blank=True)
+    hastv = models.BooleanField(null=True, blank=True)
+    hasminibar = models.BooleanField(null=True, blank=True) 
+    hasac = models.BooleanField(null=True, blank=True)
+    price = models.IntegerField(null=True, blank=True)
+    
+    class Meta:
+       db_table = 'rooms'

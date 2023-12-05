@@ -1,5 +1,6 @@
 {% extends "base.html"%}
 {% load static %}
+{% load humanize %}
 {% block content %}
 <div class="container">
   <div class="row">
@@ -42,150 +43,53 @@
             </div>
       </nav>
     </div>
-      
+
     <div class="col-lg-9 col-md-12 px-4">
+      {% for room in rooms %}
       <div class="card mb-4 border-0 shadow">
         <div class="row g-0 p-3 align-items-center">
           <div class="col-md-5 mb-lg-0 mb-md-0 mb-3">
-              <img src="{% static 'img/room/r1.jpg' %}" class="img-fluid rounded">
+              <img src="{% static 'img/room/'|add:room.image %}" class="img-fluid rounded">
           </div>
           <div class="col-md-5 px-lg-3 px-md-3 px-0">
               {% csrf_token %}
-              <h5 class="mb-3">{{ room_name }}</h5>
+              <h5 class="mb-3">{{ room.name }}</h5>
               <div class="features mb-4">
                   <h6 class="mb-1">Өрөөний онцлог</h6>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">1 Өрөө</span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">1 Ариун цэврийн өрөө</span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">1 Балкон</span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">2 Ор</span>
+                  <span class="badge rounded-pill bg-light text-dark text-wrap">{{room.rooms}} Өрөө</span>
+                  <span class="badge rounded-pill bg-light text-dark text-wrap">{{room.bathrooms}} Ариун цэврийн өрөө</span>
+                  <span class="badge rounded-pill bg-light text-dark text-wrap">{{room.balconies}} Балкон</span>
+                  <span class="badge rounded-pill bg-light text-dark text-wrap">{{room.beds}} Ор</span>
               </div>
               <div class="Facilities mb-3">
                   <h6 class="mb-1">Facilities</h6>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">Wifi</span>
+                  {% if room.haswifi == True %}
+                      <span class="badge rounded-pill bg-light text-dark text-wrap">Wifi</span>
+                  {% endif %}
+                  {% if room.hastv == True %}
                   <span class="badge rounded-pill bg-light text-dark text-wrap">Телевизор</span>
+                  {% endif %}
+                  {% if room.hasminibar == True %}
                   <span class="badge rounded-pill bg-light text-dark text-wrap">Минибар</span>
+                  {% endif %}
+                  {% if room.hasac == True %}
                   <span class="badge rounded-pill bg-light text-dark text-wrap">Агааржуулагч</span>
+                  {% endif %}
               </div>
               <div class="guests">
                   <h6 class="mb-1">Зочины тоо</h6>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">2 Том хүн</span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">2 Хүүхэд</span>
+                  <span class="badge rounded-pill bg-light text-dark text-wrap">{{room.adults}} Том хүн</span>
+                  <span class="badge rounded-pill bg-light text-dark text-wrap">{{room.children}} Хүүхэд</span>
               </div>
           </div>
           <div class="col-md-2 mt-lg-0 mt-md-0 mt-4 text-center">
-              <h6 class="mb-4">{{ room_price }}</h6>
+              <h6 class="mb-4">{{ room.price|intcomma }}₮</h6>
               <a href="#" class="btn btn-sm w-100 btn-outline-dark shadow-none mb-2">Захиалах</a>
               <a href="#" class="btn btn-sm w-100 btn-outline-dark shadow-none">Өрөөний дэлгэрэнгүй</a>
           </div>
       </div>
-      
-      </div>
-       <div class="card mb-4 border-0 shadow">
-        <div class="row g-0 p-3 align-items-center">
-          <div class="col-md-5 mb-lg-0 mb-md-0 mb-3">
-            <img src="{% static 'img/room/r2.jpg' %}" class="img-fluid rounded">
-          </div>
-          <div class="col-md-5 px-lg-3 px-md-3 px-0">
-            <h5 class="mb-3">Стандарт Твин өрөө</h5>
-            <div class="features mb-4">
-                  <h6 class="mb-1">Өрөөний онцлог</h6>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    1 Өрөө
-                  </span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    1 Ариун цэврийн өрөө
-                  </span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    1 Балкон
-                  </span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                  2 Ор
-                  </span>
-                </div>
-                <div class="Facilities mb-3">
-                  <h6 class="mb-1">Facilities</h6>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    Wifi
-                  </span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    Телевизор
-                  </span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    Минибар
-                  </span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    Агааржуулагч
-                  </span>
-                </div>
-                <div class="guests">
-                  <h6 class="mb-1">Зочины тоо</h6>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    2 Том хүн
-                  </span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    1 Хүүхэд
-                  </span>
-                </div>  
-          </div>
-          <div class="col-md-2 mt-lg-0 mt-md-0 mt-4 text-center">
-            <h6 class="mb-4">250,000₮</h6>
-            <a href="#" class="btn btn-sm w-100 btn-outline-dark shadow-none mb-2">Захиалах</a>
-            <a href="#" class="btn btn-sm w-100 btn-outline-dark shadow-none">Өрөөний дэлгэрэнгүй</a>
-          </div>
-        </div>
-      </div>
-      <div class="card mb-4 border-0 shadow">
-        <div class="row g-0 p-3 align-items-center">
-          <div class="col-md-5 mb-lg-0 mb-md-0 mb-3">
-            <img src="{% static 'img/room/r3.jpg' %}" class="img-fluid rounded">
-          </div>
-          <div class="col-md-5 px-lg-3 px-md-3 px-0">
-            <h5 class="mb-3">Стандарт Сингл Өрөө</h5>
-            <div class="features mb-4">
-                  <h6 class="mb-1">Өрөөний онцлог</h6>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    1 Өрөө
-                  </span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    1 Ариун цэврийн өрөө
-                  </span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    1 Балкон
-                  </span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                  1 Ор
-                  </span>
-                </div>
-                <div class="Facilities mb-3">
-                  <h6 class="mb-1">Facilities</h6>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    Wifi
-                  </span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    Телевизор
-                  </span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    Минибар
-                  </span>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                    Агааржуулагч
-                  </span>
-                </div>
-                <div class="guests">
-                  <h6 class="mb-1">Зочины тоо</h6>
-                  <span class="badge rounded-pill bg-light text-dark text-wrap">
-                     1 хүн
-                  </span>
-                  
-                </div>  
-          </div>
-          <div class="col-md-2 mt-lg-0 mt-md-0 mt-4 text-center">
-            <h6 class="mb-4">150,000₮</h6>
-            <a href="#" class="btn btn-sm w-100 btn-outline-dark shadow-none mb-2"  data-bs-toggle="modal" data-bs-target="#OrderModel" >Захиалах</a>
-            <a href="{% url 'product' %}" class="btn btn-sm w-100 btn-outline-dark shadow-none">Өрөөний дэлгэрэнгүй</a>
-          </div>
-          
-        </div>
+      {% endfor %}
+    </div>
       </div>
     </div>
       
