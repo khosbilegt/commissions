@@ -7,17 +7,8 @@ create table users(
 	phone varchar(50)
 );
 
-select * from users;
-
-drop table users;
-
-drop table hall_booking;
-drop table halls;
-drop table room_booking;
-drop table rooms;
-
 CREATE TABLE public.rooms (
-    room_id character varying(10) NOT NULL primary key,
+    room_id character varying(10) NOT NULL,
     name character varying(255),
     description text,
     image character varying(255),
@@ -30,8 +21,20 @@ CREATE TABLE public.rooms (
     haswifi boolean,
     hastv boolean,
     hasminibar boolean,
-    hasac boolean
+    hasac boolean,
+    price integer
 );
+
+CREATE TABLE public.users (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    first_name character varying(50),
+    last_name character varying(50),
+    password character varying(50),
+    email character varying(50),
+    phone character varying(50),
+    isadmin boolean DEFAULT false
+);
+
 
 CREATE TABLE public.room_booking (
     booking_id uuid DEFAULT gen_random_uuid() NOT NULL,
@@ -71,5 +74,3 @@ CREATE TABLE public.hall_booking (
 	foreign key(hall_id)
 	references halls(hall_id)
 );
-
-drop table room_booking;
