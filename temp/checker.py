@@ -61,7 +61,7 @@ def check_password(password):
      prohibited_sequences_lower = {sequence.lower() for sequence in prohibited_sequences}
      for sequence in prohibited_sequences_lower:
           if sequence in password_lower:
-               return f"Password must not have the consecutive keyboard sequence: {sequence}"
+               return f"Daraalalsan bairshiltai 3 temdegt ashiglaj bolohgui: {sequence}"
 
      # Alivaa toonii tusgai temdegtiig bas avch uzne
      special_char_mapping = {'1': '!', '2': '@', '3': '#', '4': '$', '5': '%', '6': '^', '7': '&', '8': '*', '9': '(', '0': ')'}
