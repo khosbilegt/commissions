@@ -60,10 +60,14 @@
               
                 
                 <div class="d-flex" role="search">
-                  <!-- <button type="button" class="btn btn-outline-dark shadow-none me-lg-3 me-2" href="{% url 'login' %}">Нэвтрэх	</button>
-                  <button type="button" class="btn btn-outline-dark shadow-none" href="{% url 'register' %}">Бүртгүүлэх	</button> -->
-                  <a class="nav-link me-2" href="{% url 'login' %}">Нэвтрэх</a>
-                  <a class="nav-link me-2" href="{% url 'register' %}">Бүртгүүлэх</a>
+                  {% if user_first_name != None %}
+                      <p>{{ user_first_name }} {{ user_last_name }}</p>
+                      <div style="margin-left: 5px"></div>
+                      <a class="nav-link me-2" href="{% url 'logout' %}">Гарах</a>
+                  {% else %}
+                    <a class="nav-link me-2" href="{% url 'login' %}">Нэвтрэх</a>
+                    <a class="nav-link me-2" href="{% url 'register' %}">Бүртгүүлэх</a>
+                  {% endif %}
                 </div>
                 
               </div>

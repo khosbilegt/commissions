@@ -8,7 +8,7 @@
   function sendPostRequest() {
       const url = '/login/';
       const data = {
-          username: document.getElementById('username').value,
+          email: document.getElementById('email').value,
           password: document.getElementById('password').value,
       };
 
@@ -23,6 +23,7 @@
       .then(response => response.json())
       .then(data => {
           console.log('Success:', data);
+          window.location.href = '/'
           // Handle the response data as needed
       })
       .catch(error => {
@@ -42,7 +43,7 @@
               <h3 class="mb-5">Sign in</h3>
   
               <div class="form-outline mb-4">
-                <input type="username" id="username" class="form-control form-control-lg" />
+                <input type="email" id="email" class="form-control form-control-lg" />
                 <label class="form-label" for="typeusernameX-2">Username</label>
               </div>
   
