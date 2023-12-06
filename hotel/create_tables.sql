@@ -32,8 +32,6 @@ CREATE TABLE public.room_booking (
     room_id character varying(10),
     start_date timestamp without time zone,
     end_date timestamp without time zone,
-    customer_name character varying(100),
-    customer_number character varying(15),
     user_id uuid,
 	foreign key(user_id)
 	references users(id),
@@ -57,8 +55,6 @@ CREATE TABLE public.hall_booking (
     hall_id character varying(10),
     start_date timestamp without time zone,
     end_date timestamp without time zone,
-    customer_name character varying(100),
-    customer_number character varying(15),
     user_id uuid,
 	foreign key (user_id)
 	references users(id),

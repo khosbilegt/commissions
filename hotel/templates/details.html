@@ -3,10 +3,41 @@
 {% load humanize %}
 {% block content %}
 
+<script>
+     function createBooking(date, id) {
+          const url = '/book/';
+          const data = {
+               room_id: id,
+               date: date
+          };
+          fetch(url, {
+               method: 'POST',
+               headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}', // Include CSRF token if required
+               },
+               body: JSON.stringify(data),
+          })
+          .then(response => response.json())
+          .then(data => {
+               if(data?.status === 'Success') {
+                    window.location.reload()
+                    window.alert("Захиалга баталгаажлаа")
+          } else {
+                    window.alert("Incorrect email or password")
+               }
+          })
+          .catch(error => {
+               console.error('Error:', error);          
+               window.alert("System error")
+          });
+     }
+     
+</script>
+
 <div class="my-5 px-4" >
   <h2 class="fw-bold h-font text-center">{{room.name}}</h2>
   <div class="h-line bg-dark"></div>
-        
 </div>
 <div class="card mb-4 border-0 shadow container">
      <div class="row g-0 p-3 align-items-center">
@@ -37,10 +68,16 @@
                <span class="badge rounded-pill bg-light text-dark text-wrap">Агааржуулагч</span>
                {% endif %}
            </div>
-           <div class="guests">
+           <div class="guests mb-3">
                <h6 class="mb-1">Зочины тоо</h6>
                <span class="badge rounded-pill bg-light text-dark text-wrap">{{room.adults}} Том хүн</span>
                <span class="badge rounded-pill bg-light text-dark text-wrap">{{room.children}} Хүүхэд</span>
+           </div>
+           <div class="Orders mb-3">
+               <h6 class="mb-1">Захиалах</h6>
+                {% for valid_date in valid_dates %}
+                    <button class="badge rounded-pill bg-light text-dark text-wrap" onclick="createBooking('{{valid_date}}', '{{room.room_id}}')">{{valid_date}}</button>
+                {% endfor %}
            </div>
        </div>
    </div>

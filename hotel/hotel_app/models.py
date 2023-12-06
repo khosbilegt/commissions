@@ -34,16 +34,14 @@ class Room(models.Model):
        db_table = 'rooms'
 
 class RoomBooking(models.Model):
-    booking_id = models.UUIDField(default=uuid.uuid4, editable=False)
-    room_id = models.ForeignKey(Room, on_delete=models.CASCADE)
+    booking_id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE,)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    customer_name = models.CharField(max_length=100)
-    customer_number = models.CharField(max_length=15)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, to_field='id')
 
     class Meta:
-       db_table = 'roombooking'
+       db_table = 'room_booking'
 
 class Hall(models.Model):
     hall_id = models.CharField(max_length=10, primary_key=True)
@@ -60,12 +58,10 @@ class Hall(models.Model):
 
 class HallBooking(models.Model):
     booking_id = models.UUIDField(default=uuid.uuid4, editable=False)
-    hall_id = models.ForeignKey(Hall, on_delete=models.CASCADE)
+    hall = models.ForeignKey(Hall, on_delete=models.CASCADE)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    customer_name = models.CharField(max_length=100)
-    customer_number = models.CharField(max_length=15)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, to_field='id')
         
     class Meta:
-       db_table = 'hallbooking'
+       db_table = 'hall_booking'
