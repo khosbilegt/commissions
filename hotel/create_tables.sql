@@ -1,12 +1,3 @@
-create table users(
-	id uuid DEFAULT gen_random_uuid() NOT NULL primary key,
-	first_name varchar(50),
-	last_name varchar(50),
-	password varchar(50),
-	email varchar(50),
-	phone varchar(50)
-);
-
 CREATE TABLE public.rooms (
     room_id character varying(10) NOT NULL,
     name character varying(255),
@@ -32,7 +23,7 @@ CREATE TABLE public.users (
     password character varying(50),
     email character varying(50),
     phone character varying(50),
-    isadmin boolean DEFAULT false
+    role character varying(25)
 );
 
 

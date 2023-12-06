@@ -84,8 +84,8 @@
           </div>
           <div class="col-md-2 mt-lg-0 mt-md-0 mt-4 text-center">
               <h6 class="mb-4">{{ room.price|intcomma }}₮</h6>
-              <a href="#" class="btn btn-sm w-100 btn-outline-dark shadow-none mb-2">Захиалах</a>
-              <a href="#" class="btn btn-sm w-100 btn-outline-dark shadow-none">Өрөөний дэлгэрэнгүй</a>
+              <a href="/order?id={{room.room_id}}" class="btn btn-sm w-100 btn-outline-dark shadow-none mb-2">Захиалах</a>
+              <a href="/details?id={{room.room_id}}" class="btn btn-sm w-100 btn-outline-dark shadow-none">Өрөөний дэлгэрэнгүй</a>
           </div>
       </div>
       {% endfor %}

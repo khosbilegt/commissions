@@ -55,7 +55,12 @@
                   <li class="nav-item">
                     <a class="nav-link me-2" href="{% url 'about' %}">Бидний тухай</a>
                   </li>
-                  {% if user_first_name != None %}
+                  {% if role == 'EMPLOYEE' or role == 'ADMIN' %}
+                  <li class="nav-item">
+                    <a class="nav-link me-2" href="/receive">Хүлээн авах</a>
+                  </li>
+                  {% endif %}
+                  {% if role == 'ADMIN' %}
                   <li class="nav-item">
                     <a class="nav-link me-2" href="/manager">Өрөө удирдах</a>
                   </li>

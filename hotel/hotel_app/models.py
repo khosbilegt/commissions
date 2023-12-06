@@ -8,10 +8,7 @@ class User(models.Model):
     password = models.CharField(max_length=50)
     email = models.EmailField(max_length=50)
     phone = models.CharField(max_length=50)
-    isadmin = models.BooleanField(null = True, blank = True)
-
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+    role = models.CharField(max_length=25)
 
     class Meta:
         db_table = 'users'
@@ -35,3 +32,40 @@ class Room(models.Model):
     
     class Meta:
        db_table = 'rooms'
+
+class RoomBooking(models.Model):
+    booking_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    room_id = models.ForeignKey(Room, on_delete=models.CASCADE)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    customer_name = models.CharField(max_length=100)
+    customer_number = models.CharField(max_length=15)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+       db_table = 'roombooking'
+
+class Hall(models.Model):
+    hall_id = models.CharField(max_length=10, primary_key=True)
+    name = models.CharField(max_length=255)
+    image = models.CharField(max_length=255)
+    description = models.TextField()
+    chairsonly = models.IntegerField()
+    roundtable = models.IntegerField()
+    studenttable = models.IntegerField()
+    pshape = models.IntegerField()
+        
+    class Meta:
+       db_table = 'halls'
+
+class HallBooking(models.Model):
+    booking_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    hall_id = models.ForeignKey(Hall, on_delete=models.CASCADE)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    customer_name = models.CharField(max_length=100)
+    customer_number = models.CharField(max_length=15)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+        
+    class Meta:
+       db_table = 'hallbooking'
