@@ -4,11 +4,25 @@
 {% block content %}
 
 <script>
-     function createBooking(date, id) {
+     let dates = "";
+
+     function addDate(date) {
+          var button = document.getElementById("button_" + date)
+          var index = dates.indexOf(date + "|");
+          if (index !== -1) {
+              button.classList.remove("bg-success");
+              dates = dates.slice(0, index) + dates.slice(index + (date + "|").length);
+          } else {
+              button.classList.add("bg-success");
+              dates += date + "|";
+          }
+     }
+
+     function createBooking(id) {
           const url = '/book/';
           const data = {
                room_id: id,
-               date: date
+               dates: dates
           };
           fetch(url, {
                method: 'POST',
@@ -76,8 +90,9 @@
            <div class="Orders mb-3">
                <h6 class="mb-1">Захиалах</h6>
                 {% for valid_date in valid_dates %}
-                    <button class="badge rounded-pill bg-light text-dark text-wrap" onclick="createBooking('{{valid_date}}', '{{room.room_id}}')">{{valid_date}}</button>
+                    <button class="badge rounded-pill text-dark text-wrap" id="button_{{valid_date}}" onclick="addDate('{{valid_date}}')">{{valid_date}}</button>
                 {% endfor %}
+                <button class="bg-light text-dark text-wrap" onclick="createBooking('{{room.room_id}}')">Баталгаажуулах</button>
            </div>
        </div>
    </div>

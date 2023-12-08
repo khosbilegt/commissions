@@ -55,6 +55,9 @@
                   <li class="nav-item">
                     <a class="nav-link me-2" href="{% url 'about' %}">Бидний тухай</a>
                   </li>
+                  <li class="nav-item">
+                    <a class="nav-link me-2" href="{% url 'bookings' %}">Миний захиалгууд</a>
+                  </li>
                   {% if role == 'EMPLOYEE' or role == 'ADMIN' %}
                   <li class="nav-item">
                     <a class="nav-link me-2" href="/receive">Хүлээн авах</a>

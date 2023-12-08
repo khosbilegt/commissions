@@ -3,10 +3,10 @@ from hotel_app import auth
 import json
 from django.http import JsonResponse
 from hotel_app.models import Room, RoomBooking, User
+from hotel_app.util import process_dates_string
 from django.http import HttpResponseForbidden
 from .forms import RoomForm
 from datetime import datetime, timedelta
-from django.utils import timezone
 from django.db.models import Q
 
 def format_date(date):
@@ -140,18 +140,9 @@ def book(request):
         user_id = user_data.get('id')
         json_data = json.loads(request.body.decode('utf-8'))
         room_id = json_data.get('room_id')
-        date_str = json_data.get('date')
-        start_date = datetime.strptime(date_str, "%Y/%m/%d")
-        room = Room.objects.get(room_id=room_id)
-        user = User.objects.get(id=user_id)
-        room_booking = RoomBooking.objects.create(
-            room_id=room.room_id,
-            user_id=user.id,
-            start_date=start_date.replace(hour=13, minute=0, second=0, microsecond=0),
-            end_date=start_date + start_date.replace(hour=13, minute=0, second=0, microsecond=0) + timedelta(days=1)
-        )
-        room_booking.save()
-        return JsonResponse({'status': 'Success'})
+        dates_string = json_data.get('dates')
+        bookings = process_dates_string(user_id, room_id, dates_string)
+        return JsonResponse({'status': 'Success', 'bookings': bookings})
     elif request.method == 'DELETE':
         json_data = json.loads(request.body.decode('utf-8'))
         booking_id = json_data.get('booking_id')
@@ -190,6 +181,13 @@ def details(request):
         "valid_dates": valid_dates
     })
 def receive(request):
+    if request.method == 'POST':
+        booking_data = json.loads(request.body.decode('utf-8'))
+        booking_id = booking_data.get('booking_id')
+        room_booking = get_object_or_404(RoomBooking, booking_id=booking_id)
+        room_booking.is_received = True
+        room_booking.save()
+        return JsonResponse({'status': 'Success'})
     user_json = request.session.get('user', '{}')
     user_data = json.loads(user_json)
     user_id = user_data.get('id')
@@ -234,4 +232,24 @@ def manager(request):
         'user_phone': user_phone,
         "role": role,
         "form": form
+    })
+def bookings(request):
+    user_json = request.session.get('user', '{}')
+    user_data = json.loads(user_json)
+    user_id = user_data.get('id')
+    user_first_name = user_data.get('first_name')
+    user_last_name = user_data.get('last_name')
+    user_email = user_data.get('email')
+    user_phone = user_data.get('phone')
+    role = user_data.get('role')
+    users = User.objects.filter(id=user_id)
+    bookings = RoomBooking.objects.filter(user=users[0])
+    return render(request, 'bookings.html', {
+        'user_id': user_id,
+        'user_first_name': user_first_name,
+        'user_last_name': user_last_name,
+        'user_email': user_email,
+        'user_phone': user_phone,
+        "role": role,
+        "bookings": bookings
     })

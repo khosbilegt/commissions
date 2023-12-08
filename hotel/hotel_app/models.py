@@ -39,6 +39,7 @@ class RoomBooking(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, to_field='id')
+    is_received = models.BooleanField(null=False, blank=False) 
 
     class Meta:
        db_table = 'room_booking'
@@ -62,6 +63,7 @@ class HallBooking(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, to_field='id')
+    is_received = models.BooleanField(null=False, blank=False) 
         
     class Meta:
        db_table = 'hall_booking'
