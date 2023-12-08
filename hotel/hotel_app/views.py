@@ -7,6 +7,7 @@ from django.http import HttpResponseForbidden
 from .forms import RoomForm
 from datetime import datetime, timedelta
 from django.utils import timezone
+from django.db.models import Q
 
 def format_date(date):
     return date.strftime("%Y/%m/%d")
@@ -81,6 +82,31 @@ def room(request):
     user_phone = user_data.get('phone')
     role = user_data.get('role')
     rooms = Room.objects.all()
+    adults = request.GET.get('adults')
+    children = request.GET.get('children')
+    room_count = request.GET.get('rooms')
+    start_date = request.GET.get('startDate')
+    end_date = request.GET.get('endDate')
+    print(start_date)
+    print(end_date)
+    if adults is not None:
+        rooms = rooms.filter(adults__gte=adults)
+    if children is not None:
+        rooms = rooms.filter(children__gte=children)
+    if room_count is not None:
+        rooms = rooms.filter(rooms__gte=room_count)
+    if start_date is not None and end_date is not None:
+        booked_rooms = RoomBooking.objects.filter(
+            Q(start_date__lte=start_date, end_date__gte=start_date) |
+            Q(start_date__lte=end_date, end_date__gte=end_date) |
+            Q(start_date__gte=start_date, end_date__lte=end_date)
+        ).values_list('room_id', flat=True)
+
+        rooms = rooms.exclude(room_id__in=booked_rooms)
+
+        if start_date > end_date:
+            rooms = []
+        print(rooms)
     return render(request, 'room.html', {
         'rooms': rooms,
         'user_id': user_id,

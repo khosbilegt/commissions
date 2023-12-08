@@ -12,7 +12,7 @@
                     method: 'DELETE',
                     headers: {
                          'Content-Type': 'application/json',
-                         'X-CSRFToken': '{{ csrf_token }}', // Include CSRF token if required
+                         'X-CSRFToken': '{{ csrf_token }}',
                     },
                     body: JSON.stringify(data),
                })

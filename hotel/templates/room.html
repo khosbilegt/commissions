@@ -2,6 +2,34 @@
 {% load static %}
 {% load humanize %}
 {% block content %}
+
+<script>
+  function search() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const children = document.getElementById('children').value;
+    const adults = document.getElementById('adults').value;
+    const rooms = document.getElementById('rooms').value;
+    var queryParam = "/room?";
+    if(startDate.length > 0) {
+      queryParam += "startDate=" + startDate + "&";
+    }
+    if(endDate.length > 0) {
+      queryParam += "endDate=" + endDate + "&";
+    }
+    if(children.length > 0) {
+      queryParam += "children=" + children + "&";
+    }
+    if(adults.length > 0) {
+      queryParam += "adults=" + adults + "&";
+    }
+    if(rooms.length > 0) {
+      queryParam += "rooms=" + rooms + "&";
+    }
+    window.location.replace(queryParam)
+  }
+</script>
+
 <div class="container">
   <div class="row">
     <div class="col-lg-3 col-md-12 mb-lg-0 mb-4 px-0">
@@ -14,29 +42,29 @@
               <div class="collapse navbar-collapse flex-column align-items-stretch mt-2" id="filterDropdown">
                 <div class="border bg-light p-3 rounded mb-3">
                   <label class="form-label">Орох өдөр</label>
-                  <input type="date" class="form-control shadow-none mb-3">
+                  <input type="date" class="form-control shadow-none mb-3" id="startDate">
                   <label class="form-label">Гарах өдөр</label>
-                  <input type="date" class="form-control shadow-none">
+                  <input type="date" class="form-control shadow-none" id="endDate">
                 </div>
                 
                 <div class="border bg-light p-3 rounded mb-3">
                   <div class="d-flex">
                     <div class="me-0,5">
                       <label class="form-label">Том хүн</label>
-                      <input type="number" class="form-control shadow-none">
+                      <input type="number" class="form-control shadow-none" id="adults">
                     </div>
                     <div>
                       <label class="form-label">Хүүхэд</label>
-                      <input type="number" class="form-control shadow-none">
+                      <input type="number" class="form-control shadow-none" id="children">
                     </div>
                     <div>
                       <label class="form-label">Өрөө</label>
-                      <input type="number" class="form-control shadow-none">
+                      <input type="number" class="form-control shadow-none" id="rooms">
                     </div>
                   </div>
                 </div>
                 <div class="col-lg-1 mb-lg-3 mt-2">
-                  <button type="submit" class="btn btn-dark "> Хайх</button>
+                  <button type="submit" class="btn btn-dark " onclick="search()"> Хайх</button>
                   <!-- <button type="submit" class="btn text-black shadow-none ">Submit</button> -->
               </div>
               </div>
@@ -84,8 +112,7 @@
           </div>
           <div class="col-md-2 mt-lg-0 mt-md-0 mt-4 text-center">
               <h6 class="mb-4">{{ room.price|intcomma }}₮</h6>
-              <a href="/order?id={{room.room_id}}" class="btn btn-sm w-100 btn-outline-dark shadow-none mb-2">Захиалах</a>
-              <a href="/details?id={{room.room_id}}" class="btn btn-sm w-100 btn-outline-dark shadow-none">Өрөөний дэлгэрэнгүй</a>
+              <a href="/details?id={{room.room_id}}" class="btn btn-sm w-100 btn-outline-dark shadow-none">Дэлгэрэнгүй</a>
           </div>
       </div>
       {% endfor %}
