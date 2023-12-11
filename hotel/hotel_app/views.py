@@ -206,6 +206,31 @@ def receive(request):
         "role": role,
         "bookings": bookings
     })
+def users(request):
+    if request.method == 'POST':
+        user_data = json.loads(request.body.decode('utf-8'))
+        user = get_object_or_404(User, id=user_data.get('id'))
+        user.role = user_data.get('role')
+        user.save()
+        return JsonResponse({'status': 'Success'})
+    user_json = request.session.get('user', '{}')
+    user_data = json.loads(user_json)
+    user_id = user_data.get('id')
+    user_first_name = user_data.get('first_name')
+    user_last_name = user_data.get('last_name')
+    user_email = user_data.get('email')
+    user_phone = user_data.get('phone')
+    users = User.objects.filter()
+    role = user_data.get('role')
+    return render(request, 'users.html', {
+        'users': users,
+        'user_id': user_id,
+        'user_first_name': user_first_name,
+        'user_last_name': user_last_name,
+        'user_email': user_email,
+        'user_phone': user_phone,
+        "role": role,
+    })
 def manager(request):
     user_json = request.session.get('user', '{}')
     user_data = json.loads(user_json)
