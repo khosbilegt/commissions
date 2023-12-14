@@ -107,9 +107,8 @@ def room(request):
         if start_date > end_date:
             rooms = []
     pass
-    sorted_rooms = 
     return render(request, 'room.html', {
-        'rooms': sorted_rooms,
+        'rooms': rooms,
         'user_id': user_id,
         'user_first_name': user_first_name,
         'user_last_name': user_last_name,
@@ -117,6 +116,14 @@ def room(request):
         'user_phone': user_phone,
         "role": role
     })
+def rooms(request):
+    name = request.GET.get('name')
+    if (len(name) == 0):
+        rooms = Room.objects.all.values()
+    else:
+        rooms = Room.objects.filter(name=name).values()
+    rooms_list = list(rooms)
+    return JsonResponse({"rooms": rooms_list}, safe=False)
 def uilchilgee(request):
     user_json = request.session.get('user', '{}')
     user_data = json.loads(user_json)
