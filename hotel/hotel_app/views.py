@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from hotel_app import auth
 import json
 from django.http import JsonResponse
@@ -76,6 +76,8 @@ def room(request):
     user_json = request.session.get('user', '{}')
     user_data = json.loads(user_json)
     user_id = user_data.get('id')
+    if user_id is None:
+        return redirect('/login')
     user_first_name = user_data.get('first_name')
     user_last_name = user_data.get('last_name')
     user_email = user_data.get('email')
@@ -87,8 +89,6 @@ def room(request):
     room_count = request.GET.get('rooms')
     start_date = request.GET.get('startDate')
     end_date = request.GET.get('endDate')
-    print(start_date)
-    print(end_date)
     if adults is not None:
         rooms = rooms.filter(adults__gte=adults)
     if children is not None:
@@ -106,9 +106,10 @@ def room(request):
 
         if start_date > end_date:
             rooms = []
-        print(rooms)
+    pass
+    sorted_rooms = 
     return render(request, 'room.html', {
-        'rooms': rooms,
+        'rooms': sorted_rooms,
         'user_id': user_id,
         'user_first_name': user_first_name,
         'user_last_name': user_last_name,
@@ -196,7 +197,7 @@ def receive(request):
     user_email = user_data.get('email')
     user_phone = user_data.get('phone')
     role = user_data.get('role')
-    bookings = RoomBooking.objects.filter()
+    bookings = RoomBooking.objects.filter().order_by('-start_date')
     return render(request, 'receive.html', {
         'user_id': user_id,
         'user_first_name': user_first_name,
