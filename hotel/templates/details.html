@@ -56,8 +56,8 @@
 <div class="card mb-4 border-0 shadow container">
      <div class="row g-0 p-3 align-items-center">
        <div class="col-md-5 mb-lg-0 mb-md-0 mb-3">
-           <img src="{% static 'img/room/'|add:room.image %}" class="img-fluid rounded">
-       </div>
+        <img src="{% static 'img/room/' %}{{ room.image }}" class="img-fluid rounded">
+    </div>
        <div class="col-md-5 px-lg-3 px-md-3 px-0">
            {% csrf_token %}
            <div class="features mb-4">
@@ -89,10 +89,11 @@
            </div>
            <div class="Orders mb-3">
                <h6 class="mb-1">Захиалах</h6>
-                {% for valid_date in valid_dates %}
+                <!-- {% for valid_date in valid_dates %}
                     <button class="badge rounded-pill text-dark text-wrap" id="button_{{valid_date}}" onclick="addDate('{{valid_date}}')">{{valid_date}}</button>
-                {% endfor %}
-                <button class="bg-light text-dark text-wrap" onclick="createBooking('{{room.room_id}}')">Баталгаажуулах</button>
+                    onclick="createBooking('{{room.room_id}}'
+                    {% endfor %} -->
+                <a class="btn btn-primary mt-2" href="/book?id={{room.room_id}}">Захиалах</a>
            </div>
        </div>
    </div>

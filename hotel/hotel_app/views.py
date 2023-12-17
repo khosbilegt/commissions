@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render,redirect, get_object_or_404
 from hotel_app import auth
 import json
 from django.http import JsonResponse
 from hotel_app.models import Room, RoomBooking, User
-from hotel_app.util import process_dates_string
+from hotel_app.util import process_dates_string, calculate_free_ranges
 from django.http import HttpResponseForbidden
 from .forms import RoomForm
 from datetime import datetime, timedelta
@@ -76,8 +76,6 @@ def room(request):
     user_json = request.session.get('user', '{}')
     user_data = json.loads(user_json)
     user_id = user_data.get('id')
-    if user_id is None:
-        return redirect('/login')
     user_first_name = user_data.get('first_name')
     user_last_name = user_data.get('last_name')
     user_email = user_data.get('email')
@@ -116,14 +114,6 @@ def room(request):
         'user_phone': user_phone,
         "role": role
     })
-def rooms(request):
-    name = request.GET.get('name')
-    if (len(name) == 0):
-        rooms = Room.objects.all.values()
-    else:
-        rooms = Room.objects.filter(name=name).values()
-    rooms_list = list(rooms)
-    return JsonResponse({"rooms": rooms_list}, safe=False)
 def uilchilgee(request):
     user_json = request.session.get('user', '{}')
     user_data = json.loads(user_json)
@@ -148,16 +138,45 @@ def book(request):
         user_id = user_data.get('id')
         json_data = json.loads(request.body.decode('utf-8'))
         room_id = json_data.get('room_id')
-        dates_string = json_data.get('dates')
-        bookings = process_dates_string(user_id, room_id, dates_string)
-        return JsonResponse({'status': 'Success', 'bookings': bookings})
+        start_date = json_data.get("start_date")
+        end_date = json_data.get("end_date")
+        overlapping_bookings = RoomBooking.objects.filter(
+            Q(room_id=room_id) & (Q(start_date__lt=end_date, end_date__gte=start_date) | Q(start_date__lte=end_date, end_date__gt=start_date))
+        )
+        if overlapping_bookings.exists():
+            return JsonResponse({'status': 'OVERLAP'}, status=500) 
+        users = User.objects.filter(id=user_id)
+        room_booking = RoomBooking.objects.create(
+            room_id=room_id,
+            start_date=start_date,
+            end_date=end_date,
+            is_received=False,
+            user=users[0]
+        )
+        return JsonResponse({'status': 'Success'})
     elif request.method == 'DELETE':
         json_data = json.loads(request.body.decode('utf-8'))
         booking_id = json_data.get('booking_id')
         room_booking = get_object_or_404(RoomBooking, booking_id=booking_id)
         room_booking.delete()
         return JsonResponse({'status': 'Success'})
-    return HttpResponseForbidden("You do not have permission to access this resource.")
+    user_json = request.session.get('user', '{}')
+    user_data = json.loads(user_json)
+    user_id = user_data.get('id')
+    user_first_name = user_data.get('first_name')
+    user_last_name = user_data.get('last_name')
+    user_email = user_data.get('email')
+    user_phone = user_data.get('phone')
+    role = user_data.get('role')
+
+    return render(request, 'book.html', {
+        'user_id': user_id,
+        'user_first_name': user_first_name,
+        'user_last_name': user_last_name,
+        'user_email': user_email,
+        'user_phone': user_phone,
+        "role": role,
+    })
 def details(request):
     user_json = request.session.get('user', '{}')
     user_data = json.loads(user_json)
@@ -167,9 +186,8 @@ def details(request):
     user_email = user_data.get('email')
     user_phone = user_data.get('phone')
     role = user_data.get('role')
-    room_id = request.GET.get('id', '')
-    rooms = Room.objects.filter(room_id=room_id)
-    bookings = RoomBooking.objects.filter(room=room_id)
+    rooms = Room.objects.filter(room_id=request.GET.get('id'))
+    bookings = RoomBooking.objects.filter(room_id=request.GET.get('id'))
     current_date = datetime.now().date()
     next_month = [current_date + timedelta(days=i) for i in range(30)]
     valid_dates = [
@@ -178,7 +196,8 @@ def details(request):
             booking.start_date.date() <= date <= booking.end_date.date() for booking in bookings
         )
     ]
-    return render(request, 'details.html', {
+    free_ranges = calculate_free_ranges(valid_dates)
+    return render(request, 'product.html', {
         'user_id': user_id,
         'user_first_name': user_first_name,
         'user_last_name': user_last_name,
@@ -186,6 +205,7 @@ def details(request):
         'user_phone': user_phone,
         "role": role,
         "room": rooms[0],
+        "free_ranges": free_ranges,
         "valid_dates": valid_dates
     })
 def receive(request):
@@ -276,7 +296,7 @@ def bookings(request):
     user_phone = user_data.get('phone')
     role = user_data.get('role')
     users = User.objects.filter(id=user_id)
-    bookings = RoomBooking.objects.filter(user=users[0])
+    bookings = RoomBooking.objects.filter().order_by('-start_date')
     return render(request, 'bookings.html', {
         'user_id': user_id,
         'user_first_name': user_first_name,

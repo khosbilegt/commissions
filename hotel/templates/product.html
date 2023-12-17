@@ -2,19 +2,70 @@
 {% load static %}
 {% block content %}
 
+<script>
+    function calculatePrice(price) {
+        const start = document.getElementById('start_date');
+        const end = document.getElementById('end_date');
+        const cost = document.getElementById('cost');
+
+        const startDate = new Date(start.value);
+        const endDate = new Date(end.value);
+
+        const dayDifference = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+
+        cost.value = "Нийт төлбөр: " + dayDifference + " x " + price + " = " + dayDifference * price;
+    }
+
+    function createBooking(id) {
+        const start = document.getElementById('start_date');
+        const end = document.getElementById('end_date');
+        const cost = document.getElementById('cost');
+
+        const startDate = new Date(start.value);
+        const endDate = new Date(end.value);
+
+        event.preventDefault();
+          const url = '/book/';
+          const data = {
+               room_id: id,
+               start_date: startDate,
+               end_date: endDate
+          };
+          fetch(url, {
+               method: 'POST',
+               headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}', // Include CSRF token if required
+               },
+               body: JSON.stringify(data),
+          })
+          .then(response => response.json())
+          .then(data => {
+               if(data?.status === 'Success') {
+                    window.alert("Захиалга баталгаажлаа")
+          } else if(data?.status === 'OVERLAP') {
+                window.alert("Захиалгын өдрүүд давхардсан байна")
+          }}
+          )
+          .catch(error => {
+               console.error('Error:', error);          
+               window.alert("System error")
+          });
+     }
+
+</script>
+
 <div class="container">
     <div class="row justify-content-center align-items-center">
         <div class="col-lg-5 col-md-5 mb-1 mt-5 order-lg-2 order-md-2 order-2">
             <img src="{% static 'img/room/r3.jpg' %}" class="w-100 img-fluid">
         </div>
         <div class="col-lg-6 col-md-5 mb-1 order-lg-2 order-md-1 order-1">
-            <h3 class="mt-1 mb-3">СТАНДАРТ СИНГЛ ӨРӨӨ</h3>
-            <p class="mb-3" >
-                Нэг ортой энгийн өрөө нь дан ганцаар аялж буй зочинд тохирох бөгөөд таны ая тухыг хангахаар өндөр хурдны утасгүй интернет, мини бар, ажлын ширээ, электрон сейф зэрэг тоног төхөөрөмжөөр тоноглогдсон.
-            </p>
-            <span class="fw-bold">Өрөөний тоо: 6</span>
-            <br><span class="fw-bold">Байрлах давхар: 5-10 давхар </span>
-            <br><span class="fw-bold" >Өрөөний хэмжээ: 15м2</span>
+            <h3 class="mt-1 mb-3">{{room.name}}</h3>
+            <p class="mb-3" >{{room.description}}</p>
+            <span class="fw-bold">Өрөөний тоо: {{room.rooms}}</span>
+            <br><span class="fw-bold">Байрлах давхар: {{room.balconies}} </span>
+            <br><span class="fw-bold" >Өрөөний хэмжээ: {{room.bathrooms}}м2</span>
             
             <div class="d-flex justify-content-start mb-2 mt-3">
                 <button type="button" class="btn btn-outline-dark shadow-none me-lg-3 me-2" data-bs-toggle="modal" data-bs-target="#OrderModel">Захиалах</button>
@@ -35,49 +86,26 @@
                             </span>
                         <div class="container-fluid">
                             <div class="row">
-                                <div class="col-md-6 ps-0 mb-3">
-                                    <label class="form-label">Овог</label>
-                                    <input type="text" class="form-control shadow-none">
-                                </div>
-                                <div class="col-md-6 ps-0 mb-3">
-                                        <label class="form-label">Нэр</label>
-                                        <input type="text" class="form-control shadow-none">
-                                </div>
-                                <div class="col-md-6 ps-0 mb-0">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control shadow-none">
-                                </div>
-                                <div class="col-md-6 ps-0 mb-0">
-                                    <label class="form-label">Утасны дугаар</label>
-                                    <input type="text" class="form-control shadow-none">
-                                </div>
-                                
+                                <div class="p-4">
+                                    <h2>Боломжит өдрүүд</h2>
+                                    {% for free_range in free_ranges %}
+                                         <p>{{free_range}}</p>
+                                    {% endfor %}
+                               </div>
                                 <div class="col-md-6 ps-0 mb-0">
                                     <label class="form-label">Ирэх өдөр  </label>
-                                    <input type="date" class="form-control shadow-none">
+                                    <input type="date" class="form-control shadow-none" id="start_date" onchange="calculatePrice('{{room.price}}')">
                                 </div>
                                 <div class="col-md-6 ps-0 mb-0 ">
-                                    <label class="form-label">Гарах өдөр</label>
-                                    <input type="date" class="form-control shadow-none">
-                                </div>
-                                <div class="col-md-4 ps-0 mb-3">
-                                    <label class="form-label">Хүн</label>
-                                    <input type="text" class="form-control shadow-none">
-                                </div>
-                                <div class="col-md-4 ps-0 mb-3 ">
-                                    <label class="form-label">Хүүхэд</label>
-                                    <input type="text" class="form-control shadow-none">
-                                </div>
-                                <div class="col-md-4 ps-0 mb-3">
-                                    <label class="form-label">Өрөө</label>
-                                    <input type="text" class="form-control shadow-none">
+                                    <label class="form-label" >Гарах өдөр</label>
+                                    <input type="date" class="form-control shadow-none" id="end_date" onchange="calculatePrice('{{room.price}}')">
                                 </div>
                                 <div class="col-md-12 p-0 mb-3 ">
-                                    <label class="form-label">Дэлгэрэнгүй мэдээлэл</label>
-                                    <input type="text" class="form-control shadow-none">
+                                    <label class="form-label">Үнэ: </label>
+                                    <input type="text" class="form-control shadow-none" disabled id="cost">
                                 </div>
                                 <div class="text-center my-1">
-                                    <button type="submit" class="btn btn-dark shadow-none">Захиалах</button>
+                                    <button onclick="createBooking('{{room.room_id}}')" class="btn btn-dark shadow-none">Захиалах</button>
                                 </div>
                                 </div>
                             </div>	

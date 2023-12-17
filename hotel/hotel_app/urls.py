@@ -16,5 +16,4 @@ urlpatterns = [
     path('receive/', views.receive, name='receive'),
     path('bookings/', views.bookings, name='bookings'),
     path('users/', views.users, name='users'),
-    path('rooms/', views.rooms, name='rooms'),
 ]

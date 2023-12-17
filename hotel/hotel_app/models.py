@@ -17,7 +17,7 @@ class Room(models.Model):
     room_id = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    image = models.CharField(max_length=255, null=True, blank=True)
+    image = models.ImageField(upload_to='static/img/room', blank=True)
     rooms = models.IntegerField(null=True, blank=True)
     beds = models.IntegerField(null=True, blank=True)
     bathrooms = models.IntegerField(null=True, blank=True)
@@ -47,7 +47,7 @@ class RoomBooking(models.Model):
 class Hall(models.Model):
     hall_id = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(max_length=255)
-    image = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='static/img/room', blank=True)
     description = models.TextField()
     chairsonly = models.IntegerField()
     roundtable = models.IntegerField()

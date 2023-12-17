@@ -80,16 +80,15 @@ WSGI_APPLICATION = 'hotel.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'hotel',
-        'USER': 'khosbilegt',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': '5432'
+        'USER': 'khosoo',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

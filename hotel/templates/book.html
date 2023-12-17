@@ -1,0 +1,79 @@
+{% extends "base.html"%}
+{% load static %}
+{% load humanize %}
+{% block content %}
+
+<script>
+     let dates = "";
+     let count = 0;
+
+     function addDate(date, price) {
+          var button = document.getElementById("button_" + date)
+          var cost = document.getElementById("cost")
+          var index = dates.indexOf(date + "|");
+          if (index !== -1) {
+               button.classList.remove("bg-success");
+               dates = dates.slice(0, index) + dates.slice(index + (date + "|").length);
+               count--;
+               cost.innerText = "Нийт төлбөр: " + count + " x " + price + " = " + parseInt(price) * count
+          } else {
+               button.classList.add("bg-success");
+               dates += date + "|";
+               count++;
+               cost.innerText = "Нийт төлбөр: " + count + " x " + price + " = " + parseInt(price) * count
+          }
+     }
+
+     function createBooking(id) {
+          const url = '/book/';
+          const data = {
+               room_id: id,
+               dates: dates
+          };
+          fetch(url, {
+               method: 'POST',
+               headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}', // Include CSRF token if required
+               },
+               body: JSON.stringify(data),
+          })
+          .then(response => response.json())
+          .then(data => {
+               if(data?.status === 'Success') {
+                    window.location.reload()
+                    window.alert("Захиалга баталгаажлаа")
+          } else {
+                    window.alert("Incorrect email or password")
+               }
+          })
+          .catch(error => {
+               console.error('Error:', error);          
+               window.alert("System error")
+          });
+     }
+     
+
+</script>
+
+<div class="card mb-4 border-0 shadow container" onload="init('{{room.price}}')">
+     <div class="p-4">
+          <h2>Боломжит өдрүүд</h2>
+          {% for free_range in free_ranges %}
+               <p>{{free_range}}</p>
+          {% endfor %}
+     </div>
+     
+     <div class="Orders mb-3">
+          <h6 class="mb-1">Захиалах</h6>
+           {% for valid_date in valid_dates %}
+               <button class="badge rounded-pill text-dark text-wrap" id="button_{{valid_date}}" onclick="addDate('{{valid_date}}', '{{room.price}}')">{{valid_date}}</button>
+           {% endfor %}
+           <br>
+           <p id="cost"></p>
+           <br>
+           <button class="bg-light text-dark text-wrap" onclick="createBooking('{{room.room_id}}')">Баталгаажуулах</button>
+      </div>
+</div>
+
+{% endblock %}     
